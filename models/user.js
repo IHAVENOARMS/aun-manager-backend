@@ -1,2 +1,2 @@
 const mongoose = require("mongoose");
-const Joi 
+const Joi = require("joi");
