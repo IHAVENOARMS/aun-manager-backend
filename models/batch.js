@@ -20,6 +20,7 @@ const Batch = mongoose.model(
     },
     name: { type: String, minLength: 1, maxLength: 100 },
     channelId: { type: String, min: 5, max: 20, unique: true },
+    channelInviteLink: { type: String, min: 5, max: 20, unique: true },
     groupChatId: { type: String, min: 5, max: 20, unique: true },
   })
 );
