@@ -12,11 +12,11 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const batch = await Batch.findById(req.params.id);
+    const batch = await Batch.findById(req.params.id).select('-__v');
     if (batch) {
       return res.send(batch);
     } else {
-      res.status(404).send('Batch with the given ID was not found');
+      return res.status(404).send('Batch with the given ID was not found');
     }
   } catch (exc) {
     return res.status(400).send(exc.message);
@@ -45,7 +45,18 @@ router.put('/:id', async (req, res) => {
     });
     if (!batch)
       return res.status(404).send('Batch with the given ID was not found');
-    res.send(batch);
+    return res.send(batch);
+  } catch (exc) {
+    return res.status(400).send(exc.message);
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const batch = await Batch.findByIdAndDelete(req.params.id);
+    if (!batch)
+      return res.status(404).send('The batch with the given ID was not found.');
+    return res.send(batch);
   } catch (exc) {
     return res.status(400).send(exc.message);
   }
