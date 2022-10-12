@@ -1,3 +1,4 @@
 {
-  "testPort": "PORT"
+  "testPort": "PORT",
+  "jwtKey": "JWT_KEY"
 }
