@@ -1,18 +1,15 @@
 require('dotenv').config();
-const config = require('config');
 const mongoose = require('mongoose');
+const config = require('config');
 const express = require('express');
 const app = express();
 const helmet = require('helmet');
 const cors = require('cors');
 
-const apiEndPoint = config.get('apiEndPoint');
-const batchRouter = require('./routes/batches');
-
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
-app.use(apiEndPoint + 'batches', batchRouter);
+require('./startup/routes')(app);
 
 mongoose.connect('mongodb://localhost/aun-manager', () => {
   console.log('Successfully connected to database');
