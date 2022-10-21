@@ -10,7 +10,8 @@ const MoodleInfo = mongoose.model(
     username: {
       type: String,
       required: true,
-      match: [moodleUsername, 'Moodle username is in an invalid format.'],
+      minLength: 1,
+      maxLength: 1024,
       unique: true,
     },
     password: {
@@ -21,13 +22,11 @@ const MoodleInfo = mongoose.model(
     },
     name: {
       type: String,
-      required: true,
       min: 1,
       max: 255,
     },
     year: {
       type: Number,
-      required: true,
       min: 1,
       max: 3000,
     },
@@ -38,8 +37,6 @@ const validate = (moodleInfo) => {
   const joiSchema = Joi.object({
     username: Joi.string().pattern(moodleUsername).required(),
     password: Joi.string().min(1).max(1024).required(),
-    name: arabicName().required(),
-    year: Joi.number().min(1).max(3000).required(),
   });
   return joiSchema.validate(moodleInfo);
 };

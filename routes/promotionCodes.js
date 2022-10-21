@@ -2,16 +2,20 @@ const { PromotionCode, validate } = require('../models/promotionCode');
 const express = require('express');
 const { Role } = require('../models/role');
 const { Batch } = require('../models/batch');
+const auth = require('../middleware/auth');
+const privilege = require('../middleware/privilege');
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/check', async (req, res) => {
+  const code = await PromotionCode.findOne({ code: req.query.code }).select(
+    '-timesToBeUsed -__v'
+  );
+  if (!code) return res.status(404).send('Promotion Code was not found');
+  res.send(code);
+});
+
+router.get('/', [auth, privilege(1000)], async (req, res) => {
   try {
-    if (req.query.code)
-      return res.send(
-        await PromotionCode.findOne({ code: req.query.code })
-          .select('-__v')
-          .select('-timesToBeUsed')
-      );
     return res.send(await PromotionCode.find().select('-__v').select('-code'));
   } catch (exc) {
     return res.status(404).send(exc.message);
@@ -33,7 +37,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', [auth, privilege(1000)], async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -63,7 +67,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', [auth, privilege(1000)], async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);

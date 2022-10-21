@@ -1,5 +1,14 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const objectId = require('joi-objectid')(Joi);
+
+const sectionSchema = mongoose.Schema({
+  _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Section', required: true },
+  number: {
+    type: Number,
+    required: true,
+  },
+});
 
 const Batch = mongoose.model(
   'batch',
@@ -19,9 +28,16 @@ const Batch = mongoose.model(
       unique: true,
     },
     name: { type: String, minLength: 1, maxLength: 100 },
-    channelId: { type: String, min: 5, max: 20, unique: true },
-    channelInviteLink: { type: String, min: 5, max: 20, unique: true },
-    groupChatId: { type: String, min: 5, max: 20, unique: true },
+    channel: { type: mongoose.Schema.Types.ObjectId, ref: 'Telegramgroup' },
+    groupChat: { type: mongoose.Schema.Types.ObjectId, ref: 'Telegramgroup' },
+    leadersChat: { type: mongoose.Schema.Types.ObjectId, ref: 'Telegramgroup' },
+    sections: {
+      type: [{ type: sectionSchema }],
+    },
+    leaders: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+      required: true,
+    },
   })
 );
 
@@ -30,8 +46,9 @@ const validate = (batch) => {
     number: Joi.number().min(1).max(3000).required(),
     year: Joi.number().min(1).max(3000).required(),
     name: Joi.string().min(1).max(100),
-    channelId: Joi.string().min(5).max(20),
-    groupChatId: Joi.string().min(5).max(20),
+    channelId: objectId(),
+    groupChatId: objectId(),
+    leaders: Joi.array().items(objectId()),
   });
   return joiSchema.validate(batch);
 };

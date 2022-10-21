@@ -1,9 +1,11 @@
 const { Role, validate } = require('../models/role');
 const express = require('express');
 const { default: mongoose } = require('mongoose');
+const auth = require('../middleware/auth');
+const privilege = require('../middleware/privilege');
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', [auth, privilege(1000)], async (req, res) => {
   try {
     return res.send(await Role.find().select('-__v'));
   } catch (exc) {
@@ -11,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', [auth, privilege(1000)], async (req, res) => {
   try {
     const role = await Role.findById(req.params.id).select('-__v');
     if (!role)
@@ -22,7 +24,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', [auth, privilege(1000)], async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -38,7 +40,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', [auth, privilege(1000)], async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -59,7 +61,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', [auth, privilege(1000)], async (req, res) => {
   try {
     const role = await Role.findByIdAndDelete(req.params.id);
     if (!role)

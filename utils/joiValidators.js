@@ -2,13 +2,14 @@ const Joi = require('joi');
 const { countries } = require('countries-list');
 const { allArabic, allEnglish } = require('./regularExpressions');
 
+const countryList = Object.keys(countries).map((c) => c.toLowerCase());
 const arabicName = (
   messageOnIncomplete = 'Arabic name is incomplete.',
   messageOnSpecialCharacters = 'Arabic name contains special characters or numbers.'
 ) => {
   return Joi.string().custom((value, helper) => {
     const separatedName = value.split(' ');
-    if (separatedName.length !== 4) {
+    if (separatedName.length < 4) {
       return helper.message(messageOnIncomplete);
     } else {
       if (separatedName.at(-1).length === 0)
@@ -26,7 +27,7 @@ const englishName = (
 ) => {
   return Joi.string().custom((value, helper) => {
     const separatedName = value.split(' ');
-    if (separatedName.length !== 4) {
+    if (separatedName.length < 4) {
       return helper.message(messageOnIncomplete);
     } else {
       if (separatedName.at(-1).length === 0)
@@ -41,15 +42,16 @@ const englishName = (
 
 const countryCode = (message = 'Invalid country code provided.') => {
   return Joi.string().custom((value, helper) => {
-    const countryList = Object.keys(countries).map((c) => c.toLowerCase());
-    if (!(value in countryList)) return helper.message(message);
+    if (!countryList.includes(value)) {
+      return helper.message(message);
+    }
   });
 };
 
 const gender = (message = 'Invalid gender provided.') => {
   return Joi.string().custom((value, helper) => {
     const genderList = ['m', 'f'];
-    if (!value in genderList) return helper.message(message);
+    if (!genderList.includes(value)) return helper.message(message);
   });
 };
 
