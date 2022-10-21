@@ -1,12 +1,20 @@
-require("dotenv").config();
-const config = require("config");
-const { json } = require("express");
-const express = require("express");
+require('dotenv').config();
+const mongoose = require('mongoose');
+const config = require('config');
+const express = require('express');
 const app = express();
+const helmet = require('helmet');
+const cors = require('cors');
 
-app.use(json);
-app;
+app.use(express.json());
+app.use(helmet());
+app.use(cors());
+require('./startup/routes')(app);
 
-app.listen(config.get("testPort"), () => {
-  console.log(`Started listening at port ${config.get("testPort")}...`);
+mongoose.connect('mongodb://localhost/aun-manager', () => {
+  console.log('Successfully connected to database');
+});
+
+app.listen(config.get('testPort'), () => {
+  console.log(`Started listening at port ${config.get('testPort')}...`);
 });
