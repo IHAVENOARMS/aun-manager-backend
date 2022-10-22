@@ -123,8 +123,9 @@ router.post('/', async (req, res) => {
         .status(400)
         .send('Moodle info name and student arabic name are not the same...');
 
+    let userWithSameMoodleInfo;
     if (moodleInfoInDb) {
-      const userWithSameMoodleInfo = await User.findOne({
+      userWithSameMoodleInfo = await User.findOne({
         'moodleInfo._id': moodleInfoInDb._id,
       });
 

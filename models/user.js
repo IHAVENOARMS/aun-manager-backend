@@ -140,8 +140,8 @@ const validate = (user) => {
   const joiSchema = Joi.object({
     username: Joi.string().min(8).max(40).required(),
     password: Joi.string().min(5).max(1024).required(),
-    arabicName: arabicName().required(),
-    englishName: englishName().required(),
+    arabicName: Joi.string().min(8).max(40).required(),
+    englishName: Joi.string().min(5).max(1024).required(),
     gender: gender().required(),
     country: countryCode().required(),
     religion: Joi.string().required().valid('ch', 'mu'),
