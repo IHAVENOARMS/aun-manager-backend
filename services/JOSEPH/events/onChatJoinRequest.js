@@ -72,10 +72,14 @@ module.exports = (joseph) => {
           chatNotYours(user, thisChat)
         );
     }
-    await ctx.approveChatJoinRequest(user.telegramId);
-    return ctx.telegram.sendMessage(
-      user.josephChatId,
-      acceptedInChat(user, thisChat)
-    );
+    try {
+      await ctx.approveChatJoinRequest(user.telegramId);
+      return ctx.telegram.sendMessage(
+        user.josephChatId,
+        acceptedInChat(user, thisChat)
+      );
+    } catch (exc) {
+      console.error(exc);
+    }
   });
 };
