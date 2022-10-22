@@ -9,7 +9,7 @@ const TelegramGroup = mongoose.model(
     type: {
       type: String,
       required: true,
-      enum: ['channel', 'group', 'private'],
+      enum: ['channel', 'group', 'supergroup', 'private'],
     },
     for: {
       type: String,
