@@ -11,7 +11,7 @@ app.use(helmet());
 app.use(cors());
 require('./startup/routes')(app);
 
-mongoose.connect('mongodb://localhost/aun-manager', () => {
+mongoose.connect(config.get('dbConnectionString'), () => {
   console.log('Successfully connected to database');
 });
 

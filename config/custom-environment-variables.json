@@ -1,4 +1,5 @@
 {
   "testPort": "PORT",
-  "jwtKey": "JWT_KEY"
+  "jwtKey": "JWT_KEY",
+  "dbConnectionString": "DB_STRING"
 }

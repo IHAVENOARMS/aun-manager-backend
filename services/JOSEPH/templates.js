@@ -117,8 +117,8 @@ const userNotFound = (user) => {
   const isFemale = user.gender === 'f';
   const firstName = user.arabicName.split(' ')[0];
   if (isFemale)
-    return `مقدرتش الاقيلك مستخدم بالاسم دا عندي.. سوري يا ${firstName} 🥺😔`;
-  return `مقدرتش الاقيلك مستخدم بالاسم دا...`;
+    return `مقدرتش الاقيلك طالب بالاسم دا في دفعتك عندي.. سوري يا ${firstName} 🥺😔`;
+  return `مقدرتش الاقيلك طالب بالاسم دا في دفعتك...`;
 };
 
 const pleaseEnterUserArabicName = (user) => {
