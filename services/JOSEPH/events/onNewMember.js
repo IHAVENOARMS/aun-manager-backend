@@ -8,7 +8,7 @@ module.exports = (joseph) => {
     const chatInDb = ctx.state.chat.dbDocument;
     const members = ctx.state.chat.dbDocument.members;
     if (!members) chatInDb.members = [];
-    if (!dbDocument.members.includes(ctx.from.id)) {
+    if (!chatInDb.members.includes(ctx.from.id)) {
       chatInDb.members.push(ctx.from.id);
       await chatInDb.save();
     }
