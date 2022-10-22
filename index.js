@@ -1,3 +1,7 @@
+// process.env.NODE_ENV = 'development';
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config();
+}
 const mongoose = require('mongoose');
 const config = require('config');
 const express = require('express');
@@ -15,5 +19,5 @@ mongoose.connect(process.env.DB_STRING, () => {
 });
 
 app.listen(process.env.PORT, () => {
-  console.log(`Started listening at port ${config.get('port')}....`);
+  console.log(`Started listening at port ${process.env.PORT}....`);
 });
