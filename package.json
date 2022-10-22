@@ -4,7 +4,7 @@
   "description": "Back end for assiut university management system",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "pm2-runtime start ecosystem.config.js --env production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,6 +30,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.5",
     "moodle-user": "^1.0.1",
+    "pm2": "^5.2.2",
     "telegraf": "^4.10.0",
     "underscore": "^1.13.6"
   }
