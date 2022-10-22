@@ -16,5 +16,5 @@ mongoose.connect(config.get('dbConnectionString'), () => {
 });
 
 app.listen(config.get('port'), () => {
-  console.log(`Started listening at port ${config.get('port')}...`);
+  console.log(`Started listening at port ${config.get('port')}....`);
 });
