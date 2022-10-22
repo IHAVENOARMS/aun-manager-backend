@@ -1,4 +1,3 @@
-require('dotenv').config();
 const mongoose = require('mongoose');
 const config = require('config');
 const express = require('express');
@@ -16,5 +15,5 @@ mongoose.connect(config.get('dbConnectionString'), () => {
 });
 
 app.listen(config.get('port'), () => {
-  console.log(`Started listening at port ${config.get('port')}...`);
+  console.log(`Started listening at port ${config.get('port')}....`);
 });
