@@ -124,7 +124,7 @@ userSchema.methods.generateAuthToken = async function () {
       role: role.name,
       privilege: role.privilege,
     },
-    config.get('jwtKey')
+    process.env.JWT_KEY
   );
   return token;
 };
