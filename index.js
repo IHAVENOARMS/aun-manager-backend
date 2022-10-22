@@ -10,10 +10,10 @@ app.use(helmet());
 app.use(cors());
 require('./startup/routes')(app);
 
-mongoose.connect(config.get('dbConnectionString'), () => {
+mongoose.connect(process.env.DB_STRING, () => {
   console.log('Successfully connected to database');
 });
 
-app.listen(config.get('port'), () => {
+app.listen(process.env.PORT, () => {
   console.log(`Started listening at port ${config.get('port')}....`);
 });
