@@ -20,6 +20,7 @@ module.exports = (joseph) => {
       return await ctx.declineChatJoinRequest(joinRequest.from.id);
 
     const thisChat = await TelegramGroup.findOne({ id: ctx.chat.id });
+    if (!thisChat) return ctx.declineChatJoinRequest(joinRequest.from.id);
     const chatFor = thisChat.for.split(' ')[0];
     if (chatFor === 'batch') {
       const batchNumber = thisChat.for.split(' ')[1];
