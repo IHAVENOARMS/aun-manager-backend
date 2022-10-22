@@ -37,6 +37,6 @@ module.exports = (joseph, command = 'password') => {
       number: user.section.number,
       'batch.number': batch.number,
     });
-    ctx.sendMessage(links(user, batch, section));
+    ctx.sendMessage(await links(user, batch, section));
   });
 };
