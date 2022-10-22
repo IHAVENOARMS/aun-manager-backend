@@ -35,7 +35,7 @@ const MoodleInfo = mongoose.model(
 
 const validate = (moodleInfo) => {
   const joiSchema = Joi.object({
-    username: Joi.string().pattern(moodleUsername).required(),
+    username: Joi.string().required().min(1).max(1024),
     password: Joi.string().min(1).max(1024).required(),
   });
   return joiSchema.validate(moodleInfo);
