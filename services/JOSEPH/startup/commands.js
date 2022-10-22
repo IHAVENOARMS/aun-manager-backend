@@ -11,6 +11,8 @@ const storeChannel = require('../commands/setChannel');
 const links = require('../commands/links');
 const promoteSectionLeader = require('../commands/promoteSectionLeader');
 const checkQuizzes = require('../commands/checkQuizzes');
+const solveQuiz = require('../commands/solveQuiz');
+const passwordFor = require('../commands/passwordFor');
 
 module.exports = (joseph) => {
   password(joseph, 'password');
@@ -26,4 +28,6 @@ module.exports = (joseph) => {
   start(joseph, 'start');
   promoteSectionLeader(joseph, 'promote_section_leader');
   checkQuizzes(joseph, 'check_quizzes');
+  passwordFor(joseph, 'password_for');
+  // solveQuiz(joseph, 'solve_quiz');
 };
