@@ -11,10 +11,10 @@ app.use(helmet());
 app.use(cors());
 require('./startup/routes')(app);
 
-mongoose.connect('mongodb://localhost/aun-manager', () => {
+mongoose.connect(config.get('dbConnectionString'), () => {
   console.log('Successfully connected to database');
 });
 
-app.listen(config.get('testPort'), () => {
-  console.log(`Started listening at port ${config.get('testPort')}...`);
+app.listen(config.get('port'), () => {
+  console.log(`Started listening at port ${config.get('port')}...`);
 });

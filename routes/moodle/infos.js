@@ -1,6 +1,6 @@
 const { MoodleInfo, validate } = require('../../models/moodle/info');
 const express = require('express');
-const MoodleUser = require('moodle-user');
+const MoodleUser = require('moodle-user/MoodleUser');
 const auth = require('../../middleware/auth');
 const privilege = require('../../middleware/privilege');
 const router = express.Router();

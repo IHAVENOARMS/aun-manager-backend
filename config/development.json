@@ -1,3 +1,4 @@
 {
+  "dbConnectionString": "mongodb://localhost/aun-manager",
   "apiEndPoint": "/api/"
 }
