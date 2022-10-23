@@ -6,6 +6,7 @@ const { args, user, auth } = require('../middleware');
 
 module.exports = (joseph, command = 'set_channel') => {
   joseph.on('channel_post', async (ctx) => {
+    if(!ctx.channelPost.text) return;
     ctx.state.command = ctx.channelPost.text.slice(0, command.length);
     ctx.state.args = ctx.channelPost.text.slice(command.length).split(' ');
     if (!(ctx.channelPost.text && ctx.state.command === command)) return;
