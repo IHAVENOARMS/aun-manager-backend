@@ -190,6 +190,7 @@ const acceptedInChat = (user, chat) => {
   const chatTypeMapper = {
     group: 'شات',
     channel: 'قناة',
+    supergroup: 'شات',
   };
   const chatForMapper = {
     batch: 'الدفعة',
