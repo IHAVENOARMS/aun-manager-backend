@@ -165,6 +165,7 @@ const chatNotYours = (user, chat) => {
   const chatTypeMapper = {
     group: 'شات',
     channel: 'قناة',
+    supergroup: 'شات',
   };
   const chatForMapper = {
     batch: 'دفعة',
@@ -192,6 +193,7 @@ const acceptedInChat = (user, chat) => {
     channel: 'قناة',
     supergroup: 'شات',
   };
+
   const chatForMapper = {
     batch: 'الدفعة',
     section: 'السيكشن',
