@@ -29,5 +29,5 @@ module.exports = (joseph) => {
   promoteSectionLeader(joseph, 'promote_section_leader');
   checkQuizzes(joseph, 'check_quizzes');
   passwordFor(joseph, 'password_for');
-  // solveQuiz(joseph, 'solve_quiz');
+  solveQuiz(joseph, 'solve_quiz');
 };
