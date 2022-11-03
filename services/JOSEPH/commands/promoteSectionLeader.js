@@ -20,7 +20,7 @@ module.exports = (joseph, command = 'promote_section_leader') => {
     batch(),
     leader(),
     chat(),
-    limitTo('group', 'section'),
+    limitTo('', 'section'),
     async (ctx) => {
       const userArabicName =
         ctx.state.args.length > 0 ? ctx.state.args.join(' ') : '';
