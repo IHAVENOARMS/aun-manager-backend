@@ -352,10 +352,16 @@ const dontSwearInfrontOfMe = (user) => {
   return `يعني هو ميهمكش بس... يا ريت متشتمش قدامي..☺️`;
 };
 
+const sentFrom = (user) => {
+  const name = user.arabicName.split(' ').slice(0, 2).join(' ');
+  return `مرسلة من: ${name}`;
+};
+
 module.exports = {
   welcome,
   test,
   userInfo,
+  sentFrom,
   noSwearWordsAllowed,
   userNotAuthorized,
   missingPassword,
