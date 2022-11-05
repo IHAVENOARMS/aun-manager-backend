@@ -1,9 +1,7 @@
-const { Telegraf } = require('telegraf');
 const { Batch } = require('../../../models/batch');
 const { Section } = require('../../../models/section');
 const { TelegramGroup } = require('../../../models/telegramGroup');
 const { User } = require('../../../models/user');
-const joseph = require('../joseph');
 
 const josephLog = (joseph) => async (message) => {
   await joseph.telegram.sendMessage(process.env.JOSEPH_LOG_CHAT_ID, message);
@@ -12,6 +10,26 @@ const josephLog = (joseph) => async (message) => {
 // const joseph = new Telegraf();
 const sendMessageToUserWithId = (joseph) => async (_id, message) => {
   const user = await User.findById(_id);
+  const log = josephLog(joseph);
+  if (!user)
+    return log(
+      `Attempted to send a message to a user that does not exist... 
+      id: ${_id}`
+    );
+  if (!user.josephChatId)
+    return log(
+      `Attempted to send a message to a user that is not linked to JOSEPH: ${user.arabicName}`
+    );
+  try {
+    await joseph.telegram.sendMessage(user.josephChatId, message);
+  } catch (exc) {
+    await log(
+      `Could not communicate with student ${user.arabicName} ${exc.message}`
+    );
+  }
+};
+
+const sendMessageToUser = (joseph) => async (user, message) => {
   const log = josephLog(joseph);
   if (!user)
     return log(
@@ -81,9 +99,12 @@ const sendMessageToSectionWithId = (joseph) => async (_id, message) => {
   await sendMessage(section.channel, message);
 };
 
-module.exports = {
-  josephLog,
-  sendMessageToUserWithId,
-  sendMessageToBatchWithId,
-  sendMessageToSectionWithId,
+module.exports = (joseph) => {
+  return {
+    log: josephLog(joseph),
+    sendMessageToUserWithId: sendMessageToUserWithId(joseph),
+    sendMessageToBatchWithId: sendMessageToBatchWithId(joseph),
+    sendMessageToSectionWithId: sendMessageToSectionWithId(joseph),
+    sendMessageToUser: sendMessageToUser(joseph),
+  };
 };

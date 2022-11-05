@@ -8,12 +8,7 @@ const onSwearWord = require('./easterEggs/onSwearWord');
 const onThankYou = require('./easterEggs/onThankYou');
 const onMessage = require('./events/onMessage');
 const onMemberLeaves = require('./events/onMemberLeaves');
-const {
-  sendMessageToUserWithId,
-  sendMessageToBatchWithId,
-  sendMessageToSectionWithId,
-  josephLog,
-} = require('./utils/messages');
+const messagingModule = require('./utils/messages');
 
 const joseph = new Telegraf(process.env.JOSEPH_TOKEN);
 
@@ -29,8 +24,5 @@ module.exports = {
   generatePassword: () => {
     return passwordGenerator.generate({ length: 10, numbers: true });
   },
-  log: josephLog(joseph),
-  sendMessageToUserWithId: sendMessageToUserWithId(joseph),
-  sendMessageToBatchWithId: sendMessageToBatchWithId(joseph),
-  sendMessageToSectionWithId: sendMessageToSectionWithId(joseph),
+  ...messagingModule(joseph),
 };

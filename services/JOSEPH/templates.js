@@ -357,6 +357,42 @@ const sentFrom = (user) => {
   return `مرسلة من: ${name}`;
 };
 
+const couldNotLogInForYou = (user) => {
+  const isFemale = user.gender === 'f';
+  if (isFemale)
+    return `مقدرتش ادخلك علي موقع الكلية.. اتاكدي انك مغيرتيش اسم المستخدم او كلمة السر بتاعتك علي الموقع...`;
+  return `مقدرتش ادخلك علي موقع الكلية... اتاكد انك مغيرتش اسم المستخدم او كلمة السر بتاعتك علي الموقع...`;
+};
+
+const quizWasAttendedBefore = (user, quiz) => {
+  return `كويز ${quiz.name} في بلوك ${quiz.course.name} محلول عندك تمام✅
+
+  http://aunonline.aun.edu.eg/med-ns/mod/quiz/view.php?id=${quiz.id}`;
+};
+
+const quizWasNotAttendedBefore = (user, quiz) => {
+  return `كويز ${quiz.name} في بلوك ${quiz.course.name} مش محلول عندك!!🛑🛑
+  اتاكد انك حليته قبل الساعة 12 يوم السبت...
+
+  ${
+    quiz.hasPendingAttempt
+      ? 'و كمان فيه محاولة مش معمولها submit, ادخل خلصها..'
+      : ''
+  }
+
+  http://aunonline.aun.edu.eg/med-ns/mod/quiz/view.php?id=${quiz.id}`;
+};
+
+const quizHasPendingAttempt = (user, quiz) => {
+  return `كويز ${quiz.name} في بلوك ${quiz.course.name} فيه محاولة مش كاملة فيه...⚠️
+
+  http://aunonline.aun.edu.eg/med-ns/mod/quiz/view.php?id=${quiz.id}`;
+};
+
+const batchDoesNotHaveSchedule = (user) => {
+  return `جدول دفعتك مش متسجل علي السيستم... مقدرتش اعرف ابصلك في انهي كويزات...`;
+};
+
 module.exports = {
   welcome,
   test,
@@ -391,4 +427,9 @@ module.exports = {
   congratsNewSectionLeader,
   links,
   dontSwearInfrontOfMe,
+  quizWasAttendedBefore,
+  quizWasNotAttendedBefore,
+  quizHasPendingAttempt,
+  couldNotLogInForYou,
+  batchDoesNotHaveSchedule,
 };

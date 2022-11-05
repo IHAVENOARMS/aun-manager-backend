@@ -30,29 +30,12 @@ router.post('/', [auth, privilege(1000)], async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-    const batch = await Batch.findById(req.body.batchId);
-    if (!batch)
-      return res.status(400).send('Batch with the given ID does not exist...');
-
-    if (batch.schedule)
-      return res
-        .status(400)
-        .send('Batch already has a schedule attached to it...');
 
     const schedule = new Schedule({
       name: req.body.name,
-      batch: {
-        _id: batch._id,
-        number: batch.number,
-      },
       weekQuizzes: req.body.weekQuizzes,
     });
     await schedule.save();
-    batch.schedule = {
-      _id: schedule._id,
-      name: schedule.name,
-    };
-    await batch.save();
     res.send(schedule);
   } catch (exc) {
     return res.status(500).send(exc.message);

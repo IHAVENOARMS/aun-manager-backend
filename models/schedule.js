@@ -6,13 +6,6 @@ const Schedule = mongoose.model(
   'Schedule',
   mongoose.Schema({
     name: { type: String, minLength: 1, maxLength: 255, required: true },
-    batch: {
-      type: mongoose.Schema({
-        _id: { type: mongoose.Schema.Types.ObjectId, required: true },
-        number: { type: Number, required: true },
-      }),
-      required: true,
-    },
     weekQuizzes: {
       type: [String],
     },
@@ -22,7 +15,6 @@ const Schedule = mongoose.model(
 const validate = (schedule) => {
   const joiSchema = Joi.object({
     name: Joi.string().min(1).max(255),
-    batchId: objectId().required(),
     weekQuizzes: Joi.array().items(Joi.string()),
   });
 

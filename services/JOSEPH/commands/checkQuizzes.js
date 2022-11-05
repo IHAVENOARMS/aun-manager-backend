@@ -1,4 +1,3 @@
-const { checkQuizzFor } = require('../../moodle/moodleService');
 const { user } = require('../middleware');
 
 module.exports = (joseph, command = 'check_quizzes') => {
