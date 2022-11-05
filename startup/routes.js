@@ -8,6 +8,7 @@ const promotionCodeRouter = require('../routes/promotionCodes');
 const userRouter = require('../routes/users');
 const sectionRouter = require('../routes/sections');
 const scheduleRouter = require('../routes/schedules');
+const messageRouter = require('../routes/messages');
 
 module.exports = function (app) {
   app.use(apiEndPoint + 'info/moodle', moodleInfoRouter);
@@ -18,4 +19,5 @@ module.exports = function (app) {
   app.use(apiEndPoint + 'codes/promotion', promotionCodeRouter);
   app.use(apiEndPoint + 'auth', authRouter);
   app.use(apiEndPoint + 'schedules', scheduleRouter);
+  app.use(apiEndPoint + 'messages', messageRouter);
 };
