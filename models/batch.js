@@ -10,15 +10,6 @@ const sectionSchema = mongoose.Schema({
   },
 });
 
-const scheduleSchema = mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Schedule',
-    required: true,
-  },
-  name: { type: String, required: true },
-});
-
 const Batch = mongoose.model(
   'batch',
   mongoose.Schema({
@@ -48,7 +39,8 @@ const Batch = mongoose.model(
       required: true,
     },
     schedule: {
-      type: scheduleSchema,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Schedule',
     },
   })
 );

@@ -9,6 +9,7 @@ const userRouter = require('../routes/users');
 const sectionRouter = require('../routes/sections');
 const scheduleRouter = require('../routes/schedules');
 const messageRouter = require('../routes/messages');
+const quizRouter = require('../routes/moodle/quizzes');
 
 module.exports = function (app) {
   app.use(apiEndPoint + 'info/moodle', moodleInfoRouter);
@@ -20,4 +21,5 @@ module.exports = function (app) {
   app.use(apiEndPoint + 'auth', authRouter);
   app.use(apiEndPoint + 'schedules', scheduleRouter);
   app.use(apiEndPoint + 'messages', messageRouter);
+  app.use(apiEndPoint + 'moodle/quizzes', quizRouter);
 };
