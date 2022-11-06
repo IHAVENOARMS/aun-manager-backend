@@ -111,6 +111,11 @@ const userSchema = mongoose.Schema({
   josephChatId: {
     type: String,
   },
+  otp: {
+    type: String,
+    minLength: 6,
+    maxLength: 6,
+  },
 });
 
 userSchema.methods.generateAuthToken = async function () {

@@ -393,6 +393,14 @@ const batchDoesNotHaveSchedule = (user) => {
   return `جدول دفعتك مش متسجل علي السيستم... مقدرتش اعرف ابصلك في انهي كويزات...`;
 };
 
+const yourOtp = (otp) => {
+  return `كلمة سر الدخول بتاعتك هي ${otp} لو مش انت اللي طلبتها اتجاهل المسج و خلاص.. تقريبا حد كتب اسم المستخدم بتاعك بالغلط..`;
+};
+
+const someoneLoggedIntoYourAccount = (user) => {
+  return `حد دخل علي الاكونت بتاعك.. لو مش انت اللي دخلت يا ريت تبلغ يوسف في اقرب وقت عشان نأمن اكونتك...`;
+};
+
 module.exports = {
   welcome,
   test,
@@ -432,4 +440,6 @@ module.exports = {
   quizHasPendingAttempt,
   couldNotLogInForYou,
   batchDoesNotHaveSchedule,
+  yourOtp,
+  someoneLoggedIntoYourAccount,
 };

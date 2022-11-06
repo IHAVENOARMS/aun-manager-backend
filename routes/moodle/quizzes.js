@@ -30,8 +30,10 @@ router.post('/check-week', [auth], async (req, res) => {
       .status(400)
       .send('Trying to check week quizzes for a user that is not a student..');
   const batch = await Batch.findById(user.batch._id).populate('schedule');
-  if (!batch.schedule)
-    return sendMessageToUserWithId(user._id, batchDoesNotHaveSchedule(user));
+  if (!batch.schedule) {
+    sendMessageToUserWithId(user._id, batchDoesNotHaveSchedule(user));
+    return res.status(400).send('Batch does not have a schedule...');
+  }
 
   await checkQuizzesForStudentWithId(req.user._id, batch.schedule.weekQuizzes);
   res.send('Success!');
