@@ -25,6 +25,11 @@ module.exports = async (ctx) => {
     await ctx.reply(noSwearWordsAllowed(user), {
       reply_to_message_id: ctx.message.message_id,
     });
+
+    await ctx.telegram.sendMessage(
+      process.env.JOSEPH_LOG_CHAT_ID,
+      ctx.message.text
+    );
     return ctx.deleteMessage(ctx.message.id);
   }
 };
