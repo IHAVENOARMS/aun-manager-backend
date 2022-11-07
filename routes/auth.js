@@ -29,8 +29,9 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/otp', async (req, res) => {
-  if (!req.body.username) return res.status(400).send('No Username provided..');
-  const user = await User.findOne({ username: req.body.username });
+  if (!req.query.username)
+    return res.status(400).send('No Username provided..');
+  const user = await User.findOne({ username: req.query.username });
   if (!user) return res.status(400).send('Invalid username.');
   if (!user.otp) {
     user.otp = generateOtp();
