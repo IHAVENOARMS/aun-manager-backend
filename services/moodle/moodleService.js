@@ -148,6 +148,7 @@ const checkQuizzesForStudentWithId = async (userId, quizzes) => {
   for (let i = 0; i < quizzes.length; i++) {
     await checkQuizzForStudent(user, quizzes[i], false, moodleUser);
   }
+  joseph.log(`Successfully checked Quizzes for user ${user.englishName}`);
 };
 
 const checkQuizzesForStudent = async (user, quizzes) => {
