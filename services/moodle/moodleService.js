@@ -248,7 +248,7 @@ const checkWeekQuizzesForBatch = async (batch) => {
   }
 
   const users = await User.find({ 'batch._id': batch._id });
-  const splitUsers = splitArray(users, 100);
+  const splitUsers = splitArray(users, 10);
   for (let i = 0; i < splitUsers.length; i++) {
     await checkQuizzesForStudents(splitUsers[i], schedule.weekQuizzes);
   }
