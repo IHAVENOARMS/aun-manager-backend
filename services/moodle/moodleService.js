@@ -111,7 +111,7 @@ const checkQuizzForStudent = async (
   } catch (exc) {
     return joseph.log(`Could not check quiz for user....
     name: ${user.arabicName}
-    id: ${userId}
+    id: ${user._id}
     quizId: ${moodleQuizId}
     ${exc.message}`);
   }
@@ -180,6 +180,7 @@ const checkQuizzesForStudent = async (user, quizzes) => {
   for (let i = 0; i < quizzes.length; i++) {
     await checkQuizzForStudent(user, quizzes[i], false, moodleUser);
   }
+  joseph.log(`Successfully checked Quizzes for user ${user.englishName}`);
 };
 
 const checkQuizzesForStudentsWithId = async (userIds, quizzes) => {
