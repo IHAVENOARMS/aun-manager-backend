@@ -2,6 +2,7 @@ const MoodleUser = require('moodle-user');
 const { Batch } = require('../../models/batch');
 const { Schedule } = require('../../models/schedule');
 const { User } = require('../../models/user');
+const splitArray = require('../../utils/splitArray');
 const joseph = require('../JOSEPH/joseph');
 
 const {
@@ -153,13 +154,13 @@ const checkQuizzesForStudent = async (user, quizzes) => {
   if (!user)
     return joseph.log(`Trying to check quiz for a user that does not exist...
   id: ${user._id}
-  quizId: ${moodleQuizId}`);
+  `);
 
   if (!user.moodleInfo)
     return joseph.log(`Trying to check quiz for a user that is not a student...
   name: ${user.arabicName}
   id: ${user._id}
-  quizId: ${moodleQuizId}`);
+  `);
 
   const moodleUser = new MoodleUser(
     user.moodleInfo.username,
@@ -237,9 +238,18 @@ const checkWeekQuizzesForBatch = async (batch) => {
     batchNumber: ${batch.number}`
     );
   }
+  if (!schedule.weekQuizzes) {
+    const errorMessage = `Schedule does not have week quizzes....
+    schedule ID: ${schedule._id}`;
+    joseph.log(errorMessage);
+    throw Error(errorMessage);
+  }
 
   const users = await User.find({ 'batch._id': batch._id });
-  checkQuizzesForStudents(users, schedule.weekQuizzes);
+  const splitUsers = splitArray(users, 100);
+  for (let i = 0; i < splitUsers.length; i++) {
+    await checkQuizzesForStudents(splitUsers[i], schedule.weekQuizzes);
+  }
 };
 
 module.exports = {

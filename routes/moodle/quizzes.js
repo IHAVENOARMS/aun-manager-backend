@@ -41,10 +41,10 @@ router.post('/check-week', [auth], async (req, res) => {
 
 router.post('/check-week-for', [auth, privilege(1000)], async (req, res) => {
   try {
-    const { error } = validateQuizCheck(req);
+    const { error } = validateQuizCheck(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const batch = await Batch.findById(req.body.for.batch);
+    const batch = await Batch.findById(req.body.batch).populate('schedule');
     if (!batch)
       return res
         .status(400)
@@ -55,6 +55,7 @@ router.post('/check-week-for', [auth, privilege(1000)], async (req, res) => {
     await checkWeekQuizzesForBatch(batch);
     res.send('Success!');
   } catch (exc) {
+    console.log(exc);
     return res.status(500).send(exc.message);
   }
 });
@@ -70,9 +71,7 @@ function validate(request) {
 
 function validateQuizCheck(request) {
   const joiSchema = Joi.object({
-    for: Joi.object({
-      batch: objectId(),
-    }),
+    batch: objectId(),
   });
   return joiSchema.validate(request);
 }
