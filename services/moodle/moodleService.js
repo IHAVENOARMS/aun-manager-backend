@@ -1,5 +1,8 @@
 const MoodleUser = require('moodle-user');
+const { Batch } = require('../../models/batch');
+const { Schedule } = require('../../models/schedule');
 const { User } = require('../../models/user');
+const splitArray = require('../../utils/splitArray');
 const joseph = require('../JOSEPH/joseph');
 
 const {
@@ -147,14 +150,113 @@ const checkQuizzesForStudentWithId = async (userId, quizzes) => {
   }
 };
 
+const checkQuizzesForStudent = async (user, quizzes) => {
+  if (!user)
+    return joseph.log(`Trying to check quiz for a user that does not exist...
+  id: ${user._id}
+  `);
+
+  if (!user.moodleInfo)
+    return joseph.log(`Trying to check quiz for a user that is not a student...
+  name: ${user.arabicName}
+  id: ${user._id}
+  `);
+
+  const moodleUser = new MoodleUser(
+    user.moodleInfo.username,
+    user.moodleInfo.password
+  );
+
+  try {
+    await moodleUser.login();
+  } catch (exc) {
+    await joseph.log(`Could not login for user...
+    name: ${user.arabicName}
+    id: ${user._id}
+    quizId: ${moodleQuizId}
+    ${exc.message}`);
+    await joseph.sendMessageToUser(user, couldNotLogInForYou(user));
+  }
+  for (let i = 0; i < quizzes.length; i++) {
+    await checkQuizzForStudent(user, quizzes[i], false, moodleUser);
+  }
+};
+
 const checkQuizzesForStudentsWithId = async (userIds, quizzes) => {
   userIds.forEach((userId) => {
     checkQuizzesForStudentWithId(userId, quizzes);
   });
 };
 
+const checkQuizzesForStudents = async (users, quizzes) => {
+  users.forEach((user) => {
+    checkQuizzesForStudent(user, quizzes);
+  });
+};
+
+const checkWeekQuizzesForBatchWithId = async (batchId) => {
+  const batch = await Batch.findById(batchId).populate('schedule');
+  if (!batch) {
+    joseph.log(`Trying to solve quizzes for a batch that does not exist...
+    batchId: ${batchId}`);
+    throw Error(
+      `Trying to solve quizzes for a batch that does not exist... batchId: ${batchId}`
+    );
+  }
+  const schedule = batch.schedule;
+  if (!schedule) {
+    joseph.log(`Trying to solve quizzes for a batch that does not have a schedule...
+    batchId: ${batch._id}
+    batchNumber: ${batch.number}`);
+    throw Error(
+      `Trying to solve quizzes for a batch that does not have a schedule...
+    batchId: ${batch._id}
+    batchNumber: ${batch.number}`
+    );
+  }
+  const users = await User.find({ 'batch._id': batchId });
+  checkQuizzesForStudents(users, schedule.weekQuizzes);
+};
+
+const checkWeekQuizzesForBatch = async (batch) => {
+  if (!batch) {
+    joseph.log(`Trying to solve quizzes for a batch that does not exist...
+    batchId: ${batch._id}`);
+    throw Error(
+      `Trying to solve quizzes for a batch that does not exist... batchId: ${batch._id}`
+    );
+  }
+
+  const schedule = batch.schedule;
+  if (!schedule) {
+    joseph.log(`Trying to solve quizzes for a batch that does not have a schedule...
+    batchId: ${batch._id}
+    batchNumber: ${batch.number}`);
+    throw Error(
+      `Trying to solve quizzes for a batch that does not have a schedule...
+    batchId: ${batch._id}
+    batchNumber: ${batch.number}`
+    );
+  }
+  if (!schedule.weekQuizzes) {
+    const errorMessage = `Schedule does not have week quizzes....
+    schedule ID: ${schedule._id}`;
+    joseph.log(errorMessage);
+    throw Error(errorMessage);
+  }
+
+  const users = await User.find({ 'batch._id': batch._id });
+  const splitUsers = splitArray(users, 100);
+  for (let i = 0; i < splitUsers.length; i++) {
+    await checkQuizzesForStudents(splitUsers[i], schedule.weekQuizzes);
+  }
+};
+
 module.exports = {
   checkQuizzForStudentWithId,
   checkQuizzesForStudentWithId,
   checkQuizzesForStudentsWithId,
+  checkQuizzesForStudents,
+  checkWeekQuizzesForBatchWithId,
+  checkWeekQuizzesForBatch,
 };
