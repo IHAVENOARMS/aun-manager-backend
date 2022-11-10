@@ -9,12 +9,12 @@ const { batchDoesNotHaveSchedule } = require('../../services/JOSEPH/templates');
 const {
   checkQuizzesForStudentsWithId,
   checkQuizzesForStudentWithId,
+  checkWeekQuizzesForBatchWithId,
+  checkWeekQuizzesForBatch,
 } = require('../../services/moodle/moodleService');
 
 const router = express.Router();
 const objectId = require('joi-objectid')(Joi);
-// const auth = require('../middleware/auth');
-// const privilege = require('../middleware/privilege');
 
 router.post('/check', [auth, privilege(1000)], async (req, res) => {
   const { error } = validate(req.body);
@@ -39,12 +39,41 @@ router.post('/check-week', [auth], async (req, res) => {
   res.send('Success!');
 });
 
+router.post('/check-week-for', [auth, privilege(1000)], async (req, res) => {
+  try {
+    const { error } = validateQuizCheck(req);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    const batch = await Batch.findById(req.body.for.batch);
+    if (!batch)
+      return res
+        .status(400)
+        .send(
+          'Trying to check week quizzes for a batch that does not exist...'
+        );
+
+    await checkWeekQuizzesForBatch(batch);
+    res.send('Success!');
+  } catch (exc) {
+    return res.status(500).send(exc.message);
+  }
+});
+
 function validate(request) {
   const joiSchema = Joi.object({
     for: Joi.array().items(objectId()).required().min(1),
     quizzes: Joi.array().items(Joi.number()),
   });
 
+  return joiSchema.validate(request);
+}
+
+function validateQuizCheck(request) {
+  const joiSchema = Joi.object({
+    for: Joi.object({
+      batch: objectId(),
+    }),
+  });
   return joiSchema.validate(request);
 }
 
