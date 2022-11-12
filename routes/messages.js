@@ -11,17 +11,22 @@ const {
   sendMessageToSectionWithId,
 } = require('../services/JOSEPH/joseph');
 const { sentFrom } = require('../services/JOSEPH/templates');
+const splitArray = require('../utils/splitArray');
 const router = express.Router();
 
 router.post('/to/users', [auth, privilege(10)], async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-    req.body.to.forEach(async (user) => {
-      await sendMessageToUserWithId(
-        user,
-        req.body.message + `\n\n${req.body.anonymous ? '' : sentFrom(req.user)}`
-      );
+    const sendTo = splitArray(req.body.to, 50);
+    sendTo.forEach((userCluster) => {
+      userCluster.forEach(async (user) => {
+        await sendMessageToUserWithId(
+          user,
+          req.body.message +
+            `\n\n${req.body.anonymous ? '' : sentFrom(req.user)}`
+        );
+      });
     });
     return res.send({ succeeded: true });
   } catch (exc) {
