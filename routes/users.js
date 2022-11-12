@@ -16,7 +16,24 @@ const privilege = require('../middleware/privilege');
 
 router.get('/', [auth, privilege(10)], async (req, res) => {
   try {
-    return res.send(await User.find().select('-__v').select('-password'));
+    let users;
+    if (req.query.batch) {
+      users = User.find({ 'batch.number': req.query.batch })
+        .select('-__v')
+        .select('-password');
+      if (req.query.select) {
+        users = users.select(req.query.select).distinct(req.query.select);
+      }
+    } else if (req.query.select) {
+      users = User.find()
+        .select('-__v')
+        .select('-password')
+        .select(req.query.select)
+        .distinct(req.query.select);
+    }
+    if (!users)
+      return res.send(await User.find().select('-__v').select('-password'));
+    else return res.send(await users);
   } catch (exc) {
     return res.status(404).send(exc.message);
   }

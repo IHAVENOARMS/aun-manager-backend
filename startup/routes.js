@@ -9,7 +9,14 @@ const userRouter = require('../routes/users');
 const sectionRouter = require('../routes/sections');
 const scheduleRouter = require('../routes/schedules');
 const messageRouter = require('../routes/messages');
+const moodleHomePageRouter = require('../routes/moodle/home');
+const moodleCategoryRouter = require('../routes/moodle/categories');
+const moodleCourseRouter = require('../routes/moodle/courses');
 const quizRouter = require('../routes/moodle/quizzes');
+const attemptRouter = require('../routes/moodle/attempts');
+const forumRouter = require('../routes/moodle/forums');
+const discussionRouter = require('../routes/moodle/discussions');
+const chatRouter = require('../routes/moodle/chats');
 
 module.exports = function (app) {
   app.use(apiEndPoint + 'info/moodle', moodleInfoRouter);
@@ -21,5 +28,12 @@ module.exports = function (app) {
   app.use(apiEndPoint + 'auth', authRouter);
   app.use(apiEndPoint + 'schedules', scheduleRouter);
   app.use(apiEndPoint + 'messages', messageRouter);
+  app.use(apiEndPoint + 'moodle/home', moodleHomePageRouter);
+  app.use(apiEndPoint + 'moodle/categories', moodleCategoryRouter);
+  app.use(apiEndPoint + 'moodle/courses', moodleCourseRouter);
   app.use(apiEndPoint + 'moodle/quizzes', quizRouter);
+  app.use(apiEndPoint + 'moodle/attempts', attemptRouter);
+  app.use(apiEndPoint + 'moodle/forums', forumRouter);
+  app.use(apiEndPoint + 'moodle/discussions', discussionRouter);
+  app.use(apiEndPoint + 'moodle/chats', chatRouter);
 };

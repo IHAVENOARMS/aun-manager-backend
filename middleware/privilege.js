@@ -5,6 +5,11 @@ module.exports =
       if (parseInt(req.user.privilege) === privilege) {
         return next();
       }
+      return res
+        .status(400)
+        .send(
+          'You do not have the required privilege to perform this operation'
+        );
     }
     if (parseInt(req.user.privilege) >= privilege && !exact) return next();
 

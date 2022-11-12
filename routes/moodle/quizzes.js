@@ -1,6 +1,7 @@
 const express = require('express');
 const Joi = require('joi');
 const auth = require('../../middleware/auth');
+const moodleAuth = require('../../middleware/moodleAuth');
 const privilege = require('../../middleware/privilege');
 const { Batch } = require('../../models/batch');
 const { User } = require('../../models/user');
@@ -9,12 +10,27 @@ const { batchDoesNotHaveSchedule } = require('../../services/JOSEPH/templates');
 const {
   checkQuizzesForStudentsWithId,
   checkQuizzesForStudentWithId,
-  checkWeekQuizzesForBatchWithId,
-  checkWeekQuizzesForBatch,
 } = require('../../services/moodle/moodleService');
 
 const router = express.Router();
 const objectId = require('joi-objectid')(Joi);
+
+router.get('/:id', [auth, moodleAuth], async (req, res) => {
+  try {
+    let quiz;
+    try {
+      quiz = await req.moodleUser.visitQuizWithId(req.params.id);
+    } catch (exc) {
+      if (exc instanceof moodleExceptions.SessionTimeOut) {
+        await refreshMoodleUser(req.user._id);
+        quiz = await req.moodleUser.visitQuizWithId(req.params.id);
+      }
+    }
+    return res.send(quiz);
+  } catch (exc) {
+    return res.status(500).send(exc.message);
+  }
+});
 
 router.post('/check', [auth, privilege(1000)], async (req, res) => {
   const { error } = validate(req.body);
@@ -39,26 +55,26 @@ router.post('/check-week', [auth], async (req, res) => {
   res.send('Success!');
 });
 
-router.post('/check-week-for', [auth, privilege(1000)], async (req, res) => {
-  try {
-    const { error } = validateQuizCheck(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+// router.post('/check-week-for', [auth, privilege(1000)], async (req, res) => {
+//   try {
+//     const { error } = validateQuizCheck(req.body);
+//     if (error) return res.status(400).send(error.details[0].message);
 
-    const batch = await Batch.findById(req.body.batch).populate('schedule');
-    if (!batch)
-      return res
-        .status(400)
-        .send(
-          'Trying to check week quizzes for a batch that does not exist...'
-        );
+//     const batch = await Batch.findById(req.body.batch).populate('schedule');
+//     if (!batch)
+//       return res
+//         .status(400)
+//         .send(
+//           'Trying to check week quizzes for a batch that does not exist...'
+//         );
 
-    await checkWeekQuizzesForBatch(batch);
-    res.send('Success!');
-  } catch (exc) {
-    console.log(exc);
-    return res.status(500).send(exc.message);
-  }
-});
+//     await checkWeekQuizzesForBatch(batch);
+//     res.send('Success!');
+//   } catch (exc) {
+//     joseph.log(exc.message);
+//     return res.status(500).send(exc.message);
+//   }
+// });
 
 function validate(request) {
   const joiSchema = Joi.object({
