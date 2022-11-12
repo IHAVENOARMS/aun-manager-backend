@@ -18,7 +18,7 @@ router.post('/to/users', [auth, privilege(10)], async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
-    const sendTo = splitArray(req.body.to, 50);
+    const sendTo = splitArray(req.body.to, 10);
     sendTo.forEach((userCluster) => {
       userCluster.forEach(async (user) => {
         await sendMessageToUserWithId(
