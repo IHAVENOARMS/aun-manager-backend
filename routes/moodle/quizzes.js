@@ -51,7 +51,7 @@ router.post('/check-week', [auth], async (req, res) => {
     return res.status(400).send('Batch does not have a schedule...');
   }
 
-  await checkQuizzesForStudentWithId(req.user._id, batch.schedule.weekQuizzes);
+  checkQuizzesForStudentWithId(req.user._id, batch.schedule.weekQuizzes);
   res.send('Success!');
 });
 
