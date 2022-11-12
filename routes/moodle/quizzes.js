@@ -1,6 +1,7 @@
 const express = require('express');
 const Joi = require('joi');
 const auth = require('../../middleware/auth');
+const moodleAuth = require('../../middleware/moodleAuth');
 const privilege = require('../../middleware/privilege');
 const { Batch } = require('../../models/batch');
 const { User } = require('../../models/user');
@@ -13,6 +14,23 @@ const {
 
 const router = express.Router();
 const objectId = require('joi-objectid')(Joi);
+
+router.get('/:id', [auth, moodleAuth], async (req, res) => {
+  try {
+    let quiz;
+    try {
+      quiz = await req.moodleUser.visitQuizWithId(req.params.id);
+    } catch (exc) {
+      if (exc instanceof moodleExceptions.SessionTimeOut) {
+        await refreshMoodleUser(req.user._id);
+        quiz = await req.moodleUser.visitQuizWithId(req.params.id);
+      }
+    }
+    return res.send(quiz);
+  } catch (exc) {
+    return res.status(500).send(exc.message);
+  }
+});
 
 router.post('/check', [auth, privilege(1000)], async (req, res) => {
   const { error } = validate(req.body);
