@@ -7,7 +7,7 @@ const student = require('../middleware/student');
 const { User } = require('../models/user');
 const router = express.Router();
 
-router.get('/me', [auth, student], async (req, res) => {
+router.get('/my-schedule', [auth, student], async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if (!user)
