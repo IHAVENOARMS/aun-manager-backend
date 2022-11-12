@@ -3,11 +3,30 @@ const { Schedule, validate } = require('../models/schedule');
 const auth = require('../middleware/auth');
 const privilege = require('../middleware/privilege');
 const { Batch } = require('../models/batch');
+const student = require('../middleware/student');
+const { User } = require('../models/user');
 const router = express.Router();
 
 router.get('/', [auth, privilege(1000)], async (req, res) => {
   try {
     return res.send(await Schedule.find());
+  } catch (exc) {
+    return res.status(500).send(exc.message);
+  }
+});
+
+router.get('/me', [auth, student], async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user)
+      return res
+        .status(404)
+        .send('Trying to get schedule for a user that no longer exists...');
+    const batch = await Batch.findById(user.batch._id).populate('schedule');
+    const schedule = batch.schedule;
+    if (!schedule)
+      return res.status(404).send('Your batch does not have a schedule');
+    return res.send(schedule);
   } catch (exc) {
     return res.status(500).send(exc.message);
   }
