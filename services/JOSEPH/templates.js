@@ -297,6 +297,8 @@ const links = async (user, batch, section) => {
   return (
     `كل اللينكات الخاصة بيك${isFemale ? 'ي' : ''}:
 
+    لينك الموقع الخاص بالسيستم: ${process.env.FRONTEND_LINK}
+
 ` +
     `${await batchLinks(batch, isSectionLeader)}
 ${await sectionLinks(section)}`
