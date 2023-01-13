@@ -7,7 +7,7 @@ const student = require('../middleware/student');
 const { User } = require('../models/user');
 const router = express.Router();
 
-router.get('/batch/me', [auth, student], async (req, res) => {
+router.get('/me', [auth, student], async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if (!user)
