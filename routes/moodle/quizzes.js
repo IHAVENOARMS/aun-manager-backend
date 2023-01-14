@@ -11,6 +11,8 @@ const {
   checkQuizzesForStudentsWithId,
   checkQuizzesForStudentWithId,
 } = require('../../services/moodle/moodleService');
+const moodleExceptions = require('moodle-user/moodleExceptions');
+const { refreshMoodleUser } = require('../../services/moodle/sessionService');
 
 const router = express.Router();
 const objectId = require('joi-objectid')(Joi);

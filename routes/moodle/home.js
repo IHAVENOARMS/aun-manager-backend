@@ -11,7 +11,7 @@ const {
 
 const router = express.Router();
 
-router.get('/', [auth, moodleAuth, privilege(1000)], async (req, res) => {
+router.get('/', [auth, moodleAuth], async (req, res) => {
   try {
     let homepage;
     try {
