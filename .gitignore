@@ -2,3 +2,7 @@ node_modules/
 .prettierrc
 .env
 .env
+models/moodle/course.js
+models/moodle/question.js
+models/moodle/quiz.js
+services/moodle/quizService.js
