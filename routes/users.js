@@ -13,6 +13,20 @@ const { Section } = require('../models/section');
 const simplifyArabic = require('../utils/simplifyArabic');
 const auth = require('../middleware/auth');
 const privilege = require('../middleware/privilege');
+const batchLeader = require('../middleware/batchLeader');
+
+router.get('/my-batch', [auth, privilege(0), batchLeader], async (req, res) => {
+  try {
+    const users = User.find({ 'batch.number': req.user.batch })
+      .select(
+        '-username -__v -password -role -moodleInfo -josephPassword -josephChatId -telegramId -otp'
+      )
+      .sort([['arabicName', 1]]);
+    return res.send(await users);
+  } catch (exc) {
+    return res.status(500).send(exc.message);
+  }
+});
 
 router.get('/', [auth, privilege(10)], async (req, res) => {
   try {
