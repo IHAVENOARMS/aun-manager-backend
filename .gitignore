@@ -5,4 +5,3 @@ node_modules/
 models/moodle/course.js
 models/moodle/question.js
 models/moodle/quiz.js
-services/moodle/quizService.js
