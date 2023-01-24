@@ -2,6 +2,7 @@ const express = require('express');
 const Joi = require('joi');
 const objectId = require('joi-objectid')(Joi);
 const auth = require('../middleware/auth');
+const batchLeader = require('../middleware/batchLeader');
 const privilege = require('../middleware/privilege');
 const { User } = require('../models/user');
 const {
@@ -14,25 +15,29 @@ const { sentFrom } = require('../services/JOSEPH/templates');
 const splitArray = require('../utils/splitArray');
 const router = express.Router();
 
-router.post('/to/users', [auth, privilege(10)], async (req, res) => {
-  try {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-    const sendTo = splitArray(req.body.to, 10);
-    sendTo.forEach((userCluster) => {
-      userCluster.forEach(async (user) => {
-        await sendMessageToUserWithId(
-          user,
-          req.body.message +
-            `\n\n${req.body.anonymous ? '' : sentFrom(req.user)}`
-        );
+router.post(
+  '/to/users',
+  [auth, privilege(0), batchLeader],
+  async (req, res) => {
+    try {
+      const { error } = validate(req.body);
+      if (error) return res.status(400).send(error.details[0].message);
+      const sendTo = splitArray(req.body.to, 10);
+      sendTo.forEach((userCluster) => {
+        userCluster.forEach(async (user) => {
+          await sendMessageToUserWithId(
+            user,
+            req.body.message +
+              `\n\n${req.body.anonymous ? '' : sentFrom(req.user)}`
+          );
+        });
       });
-    });
-    return res.send({ succeeded: true });
-  } catch (exc) {
-    return res.status(500).send(exc.message);
+      return res.send({ succeeded: true });
+    } catch (exc) {
+      return res.status(500).send(exc.message);
+    }
   }
-});
+);
 
 router.post('/to/batches', [auth, privilege(10)], async (req, res) => {
   try {
