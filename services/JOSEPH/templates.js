@@ -399,8 +399,20 @@ const yourOtp = (otp) => {
   return `كلمة سر الدخول بتاعتك هي ${otp} لو مش انت اللي طلبتها اتجاهل المسج و خلاص.. تقريبا حد كتب اسم المستخدم بتاعك بالغلط..`;
 };
 
-const someoneLoggedIntoYourAccount = (user) => {
-  return `حد دخل علي الاكونت بتاعك.. لو مش انت اللي دخلت يا ريت تبلغ يوسف في اقرب وقت عشان نأمن اكونتك...`;
+const someoneLoggedIntoYourAccount = (user, info) => {
+  const isFemale = user.gender === 'f';
+  const arabicName = user.arabicName;
+  return `يا ${arabicName.split(' ')[0]} حد دخل علي الاكونت بتاعك.. لو مش ${
+    isFemale ? 'انتي اللي دخلتي قولي' : 'انت اللي دخلت قول'
+  } ليوسف جمال في اسرع وقت عشان نأمن اكونتك..
+
+  معلومات المستخدم اللي دخل:
+
+  اسم المتصفح: ${info.name}
+  نسخة المتصفح: ${info.version}
+  جهاز المستخدم: ${info.product}
+  سيستم المستخدم: ${info.os}
+  `;
 };
 
 module.exports = {

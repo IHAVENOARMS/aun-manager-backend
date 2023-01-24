@@ -17,6 +17,7 @@ const attemptRouter = require('../routes/moodle/attempts');
 const forumRouter = require('../routes/moodle/forums');
 const discussionRouter = require('../routes/moodle/discussions');
 const chatRouter = require('../routes/moodle/chats');
+const portfolioRouter = require('../routes/portfolios');
 
 module.exports = function (app) {
   app.use(apiEndPoint + 'info/moodle', moodleInfoRouter);
@@ -28,6 +29,7 @@ module.exports = function (app) {
   app.use(apiEndPoint + 'auth', authRouter);
   app.use(apiEndPoint + 'schedules', scheduleRouter);
   app.use(apiEndPoint + 'messages', messageRouter);
+  app.use(apiEndPoint + 'portfolio', portfolioRouter);
   app.use(apiEndPoint + 'moodle/home', moodleHomePageRouter);
   app.use(apiEndPoint + 'moodle/categories', moodleCategoryRouter);
   app.use(apiEndPoint + 'moodle/courses', moodleCourseRouter);

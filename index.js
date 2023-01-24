@@ -1,7 +1,7 @@
-process.env.NODE_ENV = 'development';
-if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config();
-}
+// process.env.NODE_ENV = 'development';
+// if (process.env.NODE_ENV === 'development') {
+require('dotenv').config();
+// }
 const mongoose = require('mongoose');
 const config = require('config');
 const express = require('express');

@@ -25,7 +25,10 @@ router.post('/', async (req, res) => {
 
   const token = await user.generateAuthToken();
   res.send(token);
-  sendMessageToUser(user, someoneLoggedIntoYourAccount(user));
+  sendMessageToUser(
+    user,
+    someoneLoggedIntoYourAccount(user, req.body.userInfo)
+  );
 });
 
 router.get('/otp', async (req, res) => {
@@ -51,7 +54,10 @@ router.post('/otp', async (req, res) => {
 
   const token = await user.generateAuthToken();
   res.send(token);
-  sendMessageToUser(user, someoneLoggedIntoYourAccount(user));
+  sendMessageToUser(
+    user,
+    someoneLoggedIntoYourAccount(user, req.body.userInfo)
+  );
 
   user.otp = generateOtp();
   await user.save();
@@ -61,6 +67,12 @@ function validate(req) {
   const joiSchema = Joi.object({
     username: Joi.string().min(5).max(40).required(),
     password: Joi.string().min(5).max(1024).required(),
+    userInfo: Joi.object({
+      name: Joi.string().required(),
+      version: Joi.string().required(),
+      os: Joi.string().required(),
+      product: Joi.string().required(),
+    }).required(),
   });
   return joiSchema.validate(req);
 }
@@ -69,6 +81,12 @@ function validateOtpRequest(req) {
   const joiSchema = Joi.object({
     username: Joi.string().min(5).max(40).required(),
     otp: Joi.string().min(6).max(6).required(),
+    userInfo: Joi.object({
+      name: Joi.string().required(),
+      version: Joi.string().required(),
+      os: Joi.string().required(),
+      product: Joi.string().required(),
+    }).required(),
   });
   return joiSchema.validate(req);
 }
