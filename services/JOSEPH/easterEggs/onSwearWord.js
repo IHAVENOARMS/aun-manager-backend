@@ -2,10 +2,17 @@ const { Telegraf } = require('telegraf');
 const { User } = require('../../../models/user');
 const { swearWords } = require('../../../utils/regularExpressions');
 const simplifyArabic = require('../../../utils/simplifyArabic');
+const joseph = require('../joseph');
 const { noSwearWordsAllowed, dontSwearInfrontOfMe } = require('../templates');
 
-const joseph = new Telegraf();
-
+// const joseph = new Telegraf();
+// joseph.on('message', (ctx) => {
+//   ctx.message.ctx.telegram.editMessageText();
+//   ctx.editMessageText('fasdf', {
+//     message_id: ctx.message.id,
+//     chat_id: ctx.message.chat.id,
+//   });
+// });
 module.exports = async (ctx) => {
   const messageText = ctx.message.text;
   const isSwearWord = swearWords.test(messageText);
@@ -22,9 +29,15 @@ module.exports = async (ctx) => {
         reply_to_message_id: ctx.message.message_id,
       });
     }
-    await ctx.reply(noSwearWordsAllowed(user), {
-      reply_to_message_id: ctx.message.message_id,
-    });
+
+    await ctx.sendMessage(
+      ctx.message.text.replace(swearWords, () => {
+        return '****';
+      }),
+      {
+        reply_to_message_id: ctx.message.message_id,
+      }
+    );
 
     await ctx.telegram.sendMessage(
       process.env.JOSEPH_LOG_CHAT_ID,
