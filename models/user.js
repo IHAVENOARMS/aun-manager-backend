@@ -12,6 +12,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { Role } = require('./role');
+const { Batch } = require('./batch');
 
 const countryCodeList = Object.keys(countries).map((c) =>
   c.toLocaleLowerCase()
@@ -120,6 +121,9 @@ const userSchema = mongoose.Schema({
 
 userSchema.methods.generateAuthToken = async function () {
   const role = await Role.findById(this.role);
+  const batch = this.batch && (await Batch.findById(this.batch._id));
+  const isLeader = batch && batch.leaders.includes(this._id);
+
   const token = jwt.sign(
     {
       _id: this._id,
@@ -128,6 +132,8 @@ userSchema.methods.generateAuthToken = async function () {
       gender: this.gender,
       role: role.name,
       privilege: role.privilege,
+      isLeader: isLeader,
+      batch: batch.number || 0,
     },
     process.env.JWT_KEY
   );
