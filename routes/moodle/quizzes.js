@@ -82,36 +82,36 @@ router.get('/:cmid/attempts/:id', [auth, moodleAuth], async (req, res) => {
   }
 });
 
-router.post('/attend/:cmid', [auth, moodleAuth], async (req, res) => {
-  try {
-    try {
-      const quiz = await req.moodleUser.visitQuizWithId(req.params.cmid);
-      const finishedAttempt = await constructFinishedAttemptOfQuiz(
-        req.params.cmid
-      );
-      if (finishedAttempt) {
-        console.log(`${req.user.englishName} just attended ${quiz.name}`);
-        return res.send(await req.moodleUser.solveQuiz(quiz, finishedAttempt));
-      } else {
-        const result = await req.moodleUser.attendQuiz(quiz);
-        res.send(result);
-        await storeQuizFromFinishedAttempt(req.moodleUser, result);
-        return;
-      }
-    } catch (exc) {
-      if (exc instanceof moodleExceptions.SessionTimeOut) {
-        await refreshMoodleUser(req.user._id);
-        quiz = await req.moodleUser.visitAttempt(
-          req.params.id,
-          req.params.cmid,
-          req.query.page
-        );
-      } else throw exc;
-    }
-  } catch (exc) {
-    return res.status(500).send(exc.message);
-  }
-});
+// router.post('/attend/:cmid', [auth, moodleAuth], async (req, res) => {
+//   try {
+//     try {
+//       const quiz = await req.moodleUser.visitQuizWithId(req.params.cmid);
+//       const finishedAttempt = await constructFinishedAttemptOfQuiz(
+//         req.params.cmid
+//       );
+//       if (finishedAttempt) {
+//         console.log(`${req.user.englishName} just attended ${quiz.name}`);
+//         return res.send(await req.moodleUser.solveQuiz(quiz, finishedAttempt));
+//       } else {
+//         const result = await req.moodleUser.attendQuiz(quiz);
+//         res.send(result);
+//         await storeQuizFromFinishedAttempt(req.moodleUser, result);
+//         return;
+//       }
+//     } catch (exc) {
+//       if (exc instanceof moodleExceptions.SessionTimeOut) {
+//         await refreshMoodleUser(req.user._id);
+//         quiz = await req.moodleUser.visitAttempt(
+//           req.params.id,
+//           req.params.cmid,
+//           req.query.page
+//         );
+//       } else throw exc;
+//     }
+//   } catch (exc) {
+//     return res.status(500).send(exc.message);
+//   }
+// });
 
 router.post('/check', [auth, privilege(1000)], async (req, res) => {
   const { error } = validate(req.body);
