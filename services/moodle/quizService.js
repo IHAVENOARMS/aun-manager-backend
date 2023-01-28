@@ -1,8 +1,12 @@
 const {
   FinishedAttempt,
 } = require('moodle-user/MoodleObjects/attempts/finishedAttempt');
+const MoodleCategory = require('../../models/moodle/category');
+const MoodleCourse = require('../../models/moodle/course');
 const MoodleQuestion = require('../../models/moodle/question');
 const MoodleQuiz = require('../../models/moodle/quiz');
+const { storeCategory } = require('./categoryService');
+const { storeCourse } = require('./courseService');
 
 const getQuiz = async (cmid, withQuestions = false) => {
   const storedQuiz = MoodleQuiz.findOne({ moodleId: cmid });
@@ -66,13 +70,39 @@ const storeQuizFromFinishedAttempt = async (moodleUser, finishedAttempt) => {
     const quesitonIds = await storeQuestionsFromFinishedAttempt(
       finishedAttempt
     );
+    let storedCategory = await MoodleCategory.exists({
+      moodleId: quiz.category.id,
+    });
+
+    let storedCourse = await MoodleCourse.exists({
+      moodleId: quiz.course.id,
+    });
+
+    if (storedCategory) storedCategory = storedCategory._id;
+    if (storedCourse) storedCourse = storedCourse._id;
+
+    if (!storedCategory) {
+      storedCategory = await storeCategory(
+        moodleUser,
+        await moodleUser.visitCategoryWithId(quiz.category.id)
+      );
+      storedCourse = (
+        await MoodleCourse.exists({
+          moodleId: quiz.course.id,
+        })
+      )._id;
+    }
+
+    if (storedCategory && !storedCourse) {
+      const course = await moodleUser.visitCourseWithId(quiz.course.id);
+      storedCourse = await storeCourse(moodleUser, course, storedCategory._id);
+    }
+
     const storedQuiz = new MoodleQuiz({
       moodleId: finishedAttempt.cmid,
       name: quiz.name,
-      course: {
-        moodleId: quiz.course.id,
-        name: quiz.course.name,
-      },
+      category: storedCategory,
+      course: storedCourse,
       questions: quesitonIds,
     });
     await storedQuiz.save();
